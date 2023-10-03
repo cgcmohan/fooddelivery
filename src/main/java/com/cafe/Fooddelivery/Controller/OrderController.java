@@ -36,4 +36,13 @@ public class OrderController {
 		return orderBL.getOrderByUserId(userId);
 	}
 	
+	@GetMapping(value = "active")
+	public List<Order> activeOrderList() {
+		return orderBL.activeOrderList();
+	}
+	
+	@GetMapping(value = "/{orderId}")
+	public Order getOrderByOrderId(@PathVariable Long orderId) {
+		return orderBL.getOrderByOrderId(orderId);
+	}
 }

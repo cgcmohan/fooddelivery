@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cafe.Fooddelivery.BusinessConstant.OrderStatus;
 import com.cafe.Fooddelivery.DTO.OrderDto;
 import com.cafe.Fooddelivery.Entity.MenuItem;
 import com.cafe.Fooddelivery.Entity.Order;
 import com.cafe.Fooddelivery.Entity.User;
 import com.cafe.Fooddelivery.ResponseModel.BaseResponseModel;
+import com.cafe.Fooddelivery.ResponseModel.CreateOrderResponseModel;
 import com.cafe.Fooddelivery.Service.OrderService;
 
 @Component
@@ -22,12 +24,14 @@ public class OrderBusinessLogic {
 		this.orderService = orderService;
 	}
 	
-	public BaseResponseModel createOrder(OrderDto orderDto) {
-		BaseResponseModel response = new BaseResponseModel();
-		boolean isCreated = orderService.createOrder(orderDto);
-		if(isCreated) {
-			response.setStatus("Order Placed Successfully");
+	public CreateOrderResponseModel createOrder(OrderDto orderDto) {
+		CreateOrderResponseModel response = new CreateOrderResponseModel();
+		Order newOrder = orderService.createOrder(orderDto);
+		if(newOrder != null) {
+			response.setStatus("Order Placed Successfully : "+OrderStatus.RECEIVED);
 			response.setHasError(false);
+			response.setOrderId(String.valueOf(newOrder.getId()));
+			response.setEstimatedTime("5 minutes");
 		}
 		return response;
 	}
@@ -35,6 +39,16 @@ public class OrderBusinessLogic {
 	public List<Order> getOrderByUserId(Long userId) {
 		List<Order> orderList = orderService.getOrderByUserId(userId);
 		return orderList;
+	}
+
+	public List<Order> activeOrderList() {
+		List<Order> orderList = orderService.activeOrderList();
+		return orderList;
+	}
+
+	public Order getOrderByOrderId(Long orderId) {
+		Order order = orderService.getOrderByOrderId(orderId);
+		return order;
 	}
 
 }
